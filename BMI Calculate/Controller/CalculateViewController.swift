@@ -1,18 +1,14 @@
-//
-//  ViewController.swift
-//  BMI Calculate
-//
-//  Created by Луиза Самойленко on 30.01.2023.
-//
-
 import UIKit
 
-class ViewController: UIViewController {
+class CalculateViewController: UIViewController {
 
     @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var weightLabel: UILabel!
     @IBOutlet weak var heightSlider: UISlider!
     @IBOutlet weak var weightSlider: UISlider!
+
+    var calculatorBrain = CalculatorBrain()
+    var bmi: Float = 0.0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,8 +27,18 @@ class ViewController: UIViewController {
     @IBAction func calculatePressed(_ sender: UIButton) {
         let height = heightSlider.value
         let weight = weightSlider.value
-        let bmi = weight / pow(height, 2)
-        print(bmi)
+        calculatorBrain.calculateBMI(height: height, weight: weight)
+
+        performSegue(withIdentifier: "toResult", sender: self)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toResult" {
+            let destinationVC = segue.destination as! ResultViewController
+            destinationVC.bmiValue = calculatorBrain.getBMIValue()
+            destinationVC.bmiAdvice = calculatorBrain.getBMIAdvice()
+            destinationVC.bmiColor = calculatorBrain.getBMIColor()
+        }
     }
 }
 
